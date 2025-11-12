@@ -47,13 +47,18 @@ const transporter = nodemailer.createTransport({
 });
 
 // ====== PDF Generation ======
-async function createPDF(html, filePath) {
+aasync function createPDF(html, filePath) {
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-gpu",
+      "--no-zygote",
+      "--single-process"
+    ],
     executablePath:
-      process.env.CHROME_PATH ||
-      puppeteer.executablePath(), // fallback for local
+      process.env.CHROME_PATH || puppeteer.executablePath(),
   });
 
   const page = await browser.newPage();
@@ -61,6 +66,7 @@ async function createPDF(html, filePath) {
   await page.pdf({ path: filePath, format: "A4", printBackground: true });
   await browser.close();
 }
+
 
 
 // ====== Routes ======
