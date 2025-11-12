@@ -51,12 +51,17 @@ async function createPDF(html, filePath) {
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    executablePath:
+      process.env.CHROME_PATH ||
+      puppeteer.executablePath(), // fallback for local
   });
+
   const page = await browser.newPage();
   await page.setContent(html, { waitUntil: "networkidle0" });
   await page.pdf({ path: filePath, format: "A4", printBackground: true });
   await browser.close();
 }
+
 
 // ====== Routes ======
 
