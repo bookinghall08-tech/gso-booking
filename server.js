@@ -47,7 +47,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // ====== PDF Generation ======
-aasync function createPDF(html, filePath) {
+async function createPDF(html, filePath) {
   const browser = await puppeteer.launch({
     headless: true,
     args: [
