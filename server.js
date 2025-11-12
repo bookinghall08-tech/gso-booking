@@ -2,7 +2,9 @@ import express from "express";
 import nodemailer from "nodemailer";
 import cors from "cors";
 import fs from "fs";
+import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer";
+import { executablePath } from "puppeteer";
 import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
 import os from "os";
@@ -10,7 +12,11 @@ import os from "os";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+}));
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -30,8 +36,7 @@ function getLocalIP() {
 // ====== App Configuration ======
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0"; // 0.0.0.0 to accept all network connections
-const LOCAL_IP = getLocalIP();
-const BASE_URL = `http://${LOCAL_IP}:${PORT}`;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 const appointments = [];
 
@@ -47,24 +52,25 @@ const transporter = nodemailer.createTransport({
 });
 
 // ====== PDF Generation ======
-async function createPDF(html, filePath) {
+// ====== PDF Generation ======
+async function createPDF(html, outputPath) {
   const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-gpu",
-      "--no-zygote",
-      "--single-process"
-    ],
-    executablePath:
-      process.env.CHROME_PATH || puppeteer.executablePath(),
-  });
+  headless: true,
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
+
+
 
   const page = await browser.newPage();
   await page.setContent(html, { waitUntil: "networkidle0" });
-  await page.pdf({ path: filePath, format: "A4", printBackground: true });
+  await page.pdf({
+    path: outputPath,
+    format: "A4",
+    printBackground: true,
+  });
+
   await browser.close();
+  return outputPath;
 }
 
 

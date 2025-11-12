@@ -10,11 +10,12 @@ form.addEventListener("submit", async (e) => {
     time: form.time.value,
   };
 
-  const res = await fetch("/api/bookings", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(booking),
-  });
+  const res = await fetch("/send-appointment", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(booking),
+});
+
 
   if (res.ok) {
     message.textContent = "✅ Appointment booked successfully!";
