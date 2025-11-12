@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Appointment</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #C3B091, #F0E68C, #BDB76B);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    /* ====== Layout Container ====== */
+    .card-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 40px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card {
+      background: rgba(240, 230, 140, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      padding: 40px;
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+      transition: transform 0.4s ease;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 18px;
+      margin-bottom: 25px;
+      display: block;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      height: 250px;
+    }
+
+    .card img:hover {
+      transform: scale(1.03);
+    }
+
+    .card h2 {
+      color: #4B3E1E;
+      font-size: 2em;
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      color: #5B4C22;
+      font-size: 1.1em;
+      margin-bottom: 25px;
+    }
+
+    .card button {
+      background: linear-gradient(135deg, #BDB76B, #C3B091);
+      color: #3B2F0B;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 40px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .card button:hover:enabled {
+      transform: scale(1.08);
+      background: linear-gradient(135deg, #C3B091, #BDB76B);
+    }
+
+    .card button:disabled {
+      background: rgba(255, 255, 255, 0.4);
+      color: #6E6A40;
+      cursor: not-allowed;
+    }
+
+    .link {
+      color: #4B3E1E;
+      text-decoration: underline;
+      cursor: pointer;
+      display: block;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    label {
+      color: #4B3E1E;
+      font-size: 0.95em;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 8px;
+      margin-bottom: 25px;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      accent-color: #BDB76B;
+    }
+
+    /* ===== Modal Styling ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(61, 53, 27, 0.6);
+      backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #F0E68C, #C3B091, #BDB76B);
+      color: #3B2F0B;
+      border-radius: 20px;
+      padding: 35px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      animation: fadeIn 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .modal h3 {
+      margin-bottom: 15px;
+      font-size: 1.7em;
+      text-align: center;
+      color: #4B3E1E;
+    }
+
+    .terms-box {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+      line-height: 1.6;
+      color: #3B2F0B;
+      font-size: 0.95em;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .modal button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #BDB76B, #C3B091);
+      color: #3B2F0B;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .modal button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #C3B091, #BDB76B);
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 24px;
+      color: #3B2F0B;
+      cursor: pointer;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .close:hover {
+      color: #fff;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Scrollbar for terms box */
+    .terms-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    .terms-box::-webkit-scrollbar-thumb {
+      background-color: #BDB76B;
+      border-radius: 5px;
+    }
+
+    /* ===== Responsive Layout ===== */
+    @media (max-width: 1100px) {
+      .card-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card-container">
+    <!-- ===== Card 1: Training Hall ===== -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=800&q=80" alt="Training Hall">
+      <h2>Book Training Hall</h2>
+      <p>Check availability and book easily.</p>
+
+      <span class="link" id="viewTerms">Read Terms & Conditions</span>
+
+      <label>
+        <input type="checkbox" id="agreeCheckbox" disabled />
+        I have read and agree to the Terms and Conditions
+      </label>
+
+      <button id="proceedBtn" disabled>Proceed</button>
+    </div>
+
+    <!-- ===== Card 2: Dome Tent ===== -->
+    <div class="card">
+      <!-- Dome Tent Picture -->
+      <img src="https://images.unsplash.com/photo-1556742031-5e1b2e429e2c?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg4MnwwfDF8c2VhY2h8MXx8ZG9tZSUyMHRlbnR8ZW58MHx8fHwxNjg0Mjg2MTEx&ixlib=rb-1.2.1&q=80&w=1080" alt="Dome Tent">
+      <h2>Book Dome Tent</h2>
+      <p>Reserve a dome tent for your outdoor event.</p>
+
+      <span class="link" id="viewTentTerms">Read Terms & Conditions</span>
+
+      <label>
+        <input type="checkbox" id="tentAgreeCheckbox" disabled />
+        I have read and agree to the Terms and Conditions
+      </label>
+
+      <button id="tentProceedBtn" disabled>Proceed</button>
+    </div>
+  </div>
+
+  <!-- ===== Modal (shared) ===== -->
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h3>Terms and Conditions</h3>
+      <div class="terms-box" id="termsContent"></div>
+      <button id="agreeBtn">I Agree</button>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('termsModal');
+    const closeModal = document.getElementById('closeModal');
+    const agreeBtn = document.getElementById('agreeBtn');
+    const termsContent = document.getElementById('termsContent');
+    let currentType = null;
+
+    const trainingTerms = `
+
+      1. Booking must be made seven (7) days prior to the event date.<br>
+      2. Approval and payment (if applicable) confirm booking.<br>
+      3. Cancellations must be made at least 48 hours in advance.<br>
+      4. The applicant is responsible for any damage.<br>
+      5. No nails, tape, or adhesives on walls.<br>
+      6. Decorations require prior approval.<br>
+      7. Food/beverages only in designated areas.<br>
+      8. No smoking or alcohol.<br>
+      9. No open flames.<br>
+      10. No permanent alterations to setup.<br>
+      11. Dress code: business casual or professional.<br><br>
+      <strong>By clicking “I Agree”, you acknowledge that you have read and understood all terms.</strong>
+    `;
+
+    const domeTerms = `
+      1. Dome tents must be reserved at least five (5) days before use.<br>
+      2. Handle with care; report any damage.<br>
+      3. No open flames, cooking, or smoking inside tents.<br>
+      4. Keep area clean and free from litter.<br>
+      5. Setup location must be approved.<br>
+      6. Return tent in its original condition.<br><br>
+      <strong>By clicking “I Agree”, you acknowledge that you have read and understood all terms.</strong>
+    `;
+
+    const viewTerms = document.getElementById('viewTerms');
+    const viewTentTerms = document.getElementById('viewTentTerms');
+    const checkbox = document.getElementById('agreeCheckbox');
+    const tentCheckbox = document.getElementById('tentAgreeCheckbox');
+    const proceedBtn = document.getElementById('proceedBtn');
+    const tentProceedBtn = document.getElementById('tentProceedBtn');
+
+    viewTerms.onclick = () => {
+      termsContent.innerHTML = trainingTerms;
+      currentType = 'training';
+      modal.style.display = 'flex';
+    };
+
+    viewTentTerms.onclick = () => {
+      termsContent.innerHTML = domeTerms;
+      currentType = 'dome';
+      modal.style.display = 'flex';
+    };
+
+    closeModal.onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+    agreeBtn.onclick = () => {
+      modal.style.display = 'none';
+      if (currentType === 'training') {
+        checkbox.disabled = false;
+        checkbox.checked = true;
+        proceedBtn.disabled = false;
+      } else if (currentType === 'dome') {
+        tentCheckbox.disabled = false;
+        tentCheckbox.checked = true;
+        tentProceedBtn.disabled = false;
+      }
+    };
+
+    proceedBtn.addEventListener('click', () => {
+      if (!checkbox.checked) {
+        alert("You must agree to the Terms and Conditions first.");
+      } else {
+        window.location.href = 'calendar.html';
+      }
+    });
+
+    tentProceedBtn.addEventListener('click', () => {
+      if (!tentCheckbox.checked) {
+        alert("You must agree to the Terms and Conditions first.");
+      } else {
+        window.location.href = 'dome-calendar.html';
+      }
+    });
+  </script>
+</body>
+</html>

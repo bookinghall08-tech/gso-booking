@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📅 Select Dates</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #C3B091, #F0E68C, #BDB76B);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h2 {
+      color: #4B3E1E;
+      margin-bottom: 15px;
+      font-size: 1.8em;
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    #selectedInfo {
+      font-size: 1.1em;
+      color: #3B2F0B;
+      margin-bottom: 20px;
+      font-weight: 500;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    #calendar {
+      background: rgba(255, 248, 220, 0.4);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      width: 95%;
+      max-width: 1000px;
+      padding: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .fc-toolbar {
+      position: relative !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+    }
+
+    .fc-toolbar-title {
+      position: absolute !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      font-size: 1.6em;
+      font-weight: 600;
+      color: #3B2F0B;
+    }
+
+    .fc-button {
+      background: linear-gradient(135deg, #BDB76B, #C3B091) !important;
+      border: none !important;
+      border-radius: 6px !important;
+      color: #3B2F0B !important;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .fc-button:hover {
+      background: linear-gradient(135deg, #C3B091, #BDB76B) !important;
+      transform: scale(1.05);
+    }
+
+    .fc-daygrid-day {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .fc-daygrid-day:hover {
+      background: rgba(240, 230, 140, 0.5);
+      cursor: pointer;
+      transform: scale(1.02);
+    }
+
+    .fc-day-today {
+      background-color: rgba(189, 183, 107, 0.6) !important;
+      border-radius: 10px !important;
+    }
+
+    .fc-col-header-cell-cushion,
+    .fc-daygrid-day-number {
+      color: #3B2F0B !important;
+      font-weight: 500;
+    }
+
+    .back-btn, .proceed-btn {
+      margin-top: 25px;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #BDB76B, #C3B091);
+      color: #3B2F0B;
+      border: none;
+      border-radius: 30px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover, .proceed-btn:hover {
+      background: linear-gradient(135deg, #C3B091, #BDB76B);
+      transform: scale(1.08);
+    }
+
+    .proceed-btn {
+      display: none;
+    }
+
+    .selected-day {
+      border: 3px solid #4B3E1E !important;
+      background: rgba(218, 165, 32, 0.3) !important;
+    }
+
+    .reserved-day {
+      background: rgba(255, 99, 71, 0.5) !important;
+      border: 2px solid #FF4500 !important;
+      cursor: not-allowed !important;
+    }
+  </style>
+</head>
+<body>
+  <h2>📅 Select Dates for Hall Reservation</h2>
+  <p id="selectedInfo">Click on multiple dates to select or deselect them.</p>
+  <div id="calendar"></div>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
+  <button class="proceed-btn" id="proceedBtn">Proceed →</button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      const calendarEl = document.getElementById("calendar");
+      const selectedInfo = document.getElementById("selectedInfo");
+      const proceedBtn = document.getElementById("proceedBtn");
+      let selectedDates = new Set();
+      let reservedDates = new Set();
+
+      // Fetch already reserved dates from server
+      try {
+        const res = await fetch("http://localhost:3000/appointments"); // Adjust route if needed
+        const appointments = await res.json();
+        appointments.forEach(a => {
+          if (a.status === "approved" && a.reservedDates) {
+            a.reservedDates.forEach(d => reservedDates.add(d));
+          }
+        });
+      } catch (err) {
+        console.error("Could not fetch reserved dates:", err);
+      }
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        height: "80vh",
+        initialView: "dayGridMonth",
+        selectable: true,
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: ""
+        },
+        dateClick: function(info) {
+          const clickedDate = info.dateStr;
+          const dayCell = info.dayEl;
+
+          // Prevent selecting reserved dates
+          if (reservedDates.has(clickedDate)) return;
+
+          if (selectedDates.has(clickedDate)) {
+            selectedDates.delete(clickedDate);
+            dayCell.classList.remove("selected-day");
+          } else {
+            selectedDates.add(clickedDate);
+            dayCell.classList.add("selected-day");
+          }
+
+          updateSelectedText();
+        },
+        dayCellDidMount: function(info) {
+          if (reservedDates.has(info.dateStr)) {
+            info.el.classList.add("reserved-day");
+          }
+        }
+      });
+
+      calendar.render();
+
+      function updateSelectedText() {
+        if (selectedDates.size === 0) {
+          selectedInfo.textContent = "Click on multiple dates to select or deselect them.";
+          proceedBtn.style.display = "none";
+          return;
+        }
+
+        const sortedDates = Array.from(selectedDates)
+          .sort((a, b) => new Date(a) - new Date(b));
+
+        let ranges = [];
+        let start = sortedDates[0];
+        let end = start;
+
+        function addRange(s, e) {
+          const sDate = new Date(s + "T00:00:00");
+          const eDate = new Date(e + "T00:00:00");
+          const sMonth = sDate.toLocaleString("default", { month: "long" });
+          const eMonth = eDate.toLocaleString("default", { month: "long" });
+
+          if (s === e) return `${sMonth} ${sDate.getDate()}`;
+          if (sDate.getMonth() === eDate.getMonth()) {
+            return `${sMonth} ${sDate.getDate()}–${eDate.getDate()}`;
+          }
+          return `${sMonth} ${sDate.getDate()} – ${eMonth} ${eDate.getDate()}`;
+        }
+
+        for (let i = 1; i < sortedDates.length; i++) {
+          const current = new Date(sortedDates[i] + "T00:00:00");
+          const prev = new Date(sortedDates[i - 1] + "T00:00:00");
+          const diff = (current - prev) / (1000 * 60 * 60 * 24);
+
+          if (diff === 1) {
+            end = sortedDates[i];
+          } else {
+            ranges.push(addRange(start, end));
+            start = sortedDates[i];
+            end = start;
+          }
+        }
+        ranges.push(addRange(start, end));
+
+        selectedInfo.textContent = `✅ Selected Dates: ${ranges.join(", ")}`;
+        proceedBtn.style.display = "inline-block";
+      }
+
+      proceedBtn.onclick = () => {
+        if (selectedDates.size > 0) {
+          const dateList = Array.from(selectedDates).sort().join(",");
+          localStorage.setItem("selectedDates", dateList);
+          window.location.href = `booking.html?dates=${dateList}`;
+        }
+      };
+    });
+  </script>
+</body>
+</html>

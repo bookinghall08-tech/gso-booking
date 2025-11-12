@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Bookings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>All Bookings</h1>
+  <table id="bookingsTable">
+    <thead><tr><th>Name</th><th>Email</th><th>Date</th><th>Time</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    fetch("/api/bookings")
+      .then(res => res.json())
+      .then(bookings => {
+        const tbody = document.querySelector("tbody");
+        bookings.forEach(b => {
+          const row = `<tr><td>${b.name}</td><td>${b.email}</td><td>${b.date}</td><td>${b.time}</td></tr>`;
+          tbody.innerHTML += row;
+        });
+      });
+  </script>
+</body>
+</html>

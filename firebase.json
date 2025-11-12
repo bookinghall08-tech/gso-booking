@@ -1,0 +1,41 @@
+{
+  "hosting": {
+  "public": "public",
+  "rewrites": [
+    {
+      "source": "/api/**",
+      "function": "api"
+    }
+  ]
+},
+  "functions": [
+    {
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "source": "functions"
+    },
+    {
+      "codebase": "bookingappointment",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+  "echo Skipping lint on Windows"
+]
+,
+      "source": "bookingappointment"
+    }
+  ]
+}

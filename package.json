@@ -1,0 +1,29 @@
+{
+  "name": "gso-booking",
+  "version": "1.0.0",
+  "description": "GSO Booking System – Reservation and Email PDF Automation Server",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "nodemailer": "^6.9.11",
+    "os": "^0.1.2",
+    "puppeteer": "^22.15.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "author": "GSO Booking Team",
+  "license": "MIT"
+}

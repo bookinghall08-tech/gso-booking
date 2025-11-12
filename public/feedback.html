@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post-Event Feedback Form</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #C3B091, #F0E68C, #BDB76B);
+      display: flex; justify-content: center; align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(240, 230, 140, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 40px 50px;
+      width: 100%; max-width: 900px; max-height: 90vh;
+      overflow-y: auto;
+    }
+    h2 { color: #4B3E1E; text-align: center; margin-bottom: 10px; }
+    p { color: #5B4C22; text-align: center; margin-bottom: 20px; }
+    h3 { color: #4B3E1E; margin-top: 25px; text-align: left; font-size: 1.1em; font-weight: 700; }
+    label { display: block; text-align: left; color: #4B3E1E; font-weight: 600; margin-top: 15px; }
+    input, textarea, select {
+      width: 100%; padding: 10px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.3);
+      margin-top: 5px; font-size: 0.95em; color: #3B2F0B;
+    }
+    textarea { resize: none; height: 70px; }
+    .rating-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; }
+    .rating-table th, .rating-table td {
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 8px; color: #3B2F0B; vertical-align: top;
+    }
+    .rating-table th { background: rgba(255, 255, 255, 0.25); text-align: center; }
+    .checkbox-group { display: flex; justify-content: center; gap: 8px; padding-top: 6px; }
+    .checkbox-group label { font-weight: 500; font-size: 0.9em; color: #3B2F0B; }
+    .checkbox-group input { margin-right: 2px; }
+    .comment-box {
+      width: 100%; height: 40px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.3);
+      padding: 5px 8px; font-size: 0.9em; color: #3B2F0B;
+    }
+    button {
+      margin-top: 20px; width: 100%; padding: 14px;
+      border: none; border-radius: 30px;
+      background: linear-gradient(135deg, #BDB76B, #C3B091);
+      color: #3B2F0B; font-weight: 600; cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover { background: linear-gradient(135deg, #C3B091, #BDB76B); transform: scale(1.05); }
+    #thankYouMsg {
+      display: none; color: #2E8B57; margin-top: 10px;
+      font-weight: 600; text-align: center;
+    }
+    #backToCalendar {
+      display: none;
+      margin-top: 10px;
+      background: #C3B091;
+      color: #3B2F0B;
+      border-radius: 20px;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .checkbox-group { flex-wrap: wrap; }
+      .comment-box { width: 100%; margin-top: 5px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Thank You for Using Our Facility!</h2>
+    <p>Your feedback helps us improve our services.</p>
+
+    <form id="feedbackForm">
+      <h3>A. Event Information</h3>
+      <label>Name of Department / Office:</label>
+      <input type="text" id="department" required>
+
+      <label>Event Title:</label>
+      <input type="text" id="eventTitle" required>
+
+      <label>Date of Event:</label>
+      <input type="date" id="eventDate" required>
+
+      <label>Name of Contact Person:</label>
+      <input type="text" id="contactPerson" required>
+
+      <h3>B. Facility and Service Feedback</h3>
+      <p style="text-align:left;">Please rate the following on a scale of 1 to 5 (1 = Poor, 5 = Excellent):</p>
+
+      <table class="rating-table">
+        <tr>
+          <th style="width:35%;">Category</th>
+          <th style="width:30%;">Rating (1–5)</th>
+          <th style="width:35%;">Comments</th>
+        </tr>
+
+        <!-- Example row (copy pattern for all rows) -->
+        <tr>
+          <td>1. Ease of Booking Process</td>
+          <td>
+            <div class="checkbox-group" data-name="bookingProcess">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="bookingComment" placeholder="Comments"></td>
+        </tr>
+        <tr>
+          <td>2. Helpfulness of Staff</td>
+          <td>
+            <div class="checkbox-group" data-name="staff">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="staffComment" placeholder="Comments"></td>
+        </tr>
+        <tr>
+          <td>3. Cleanliness of the Venue</td>
+          <td>
+            <div class="checkbox-group" data-name="cleanliness">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="cleanlinessComment" placeholder="Comments"></td>
+        </tr>
+        <tr>
+          <td>4. Audio-Visual Equipment Function</td>
+          <td>
+            <div class="checkbox-group" data-name="equipment">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="equipmentComment" placeholder="Comments"></td>
+        </tr>
+        <tr>
+          <td>5. Comfort of Chairs / Seating</td>
+          <td>
+            <div class="checkbox-group" data-name="chairs">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="chairsComment" placeholder="Comments"></td>
+        </tr>
+        <tr>
+          <td>6. Air Conditioning & Lighting</td>
+          <td>
+            <div class="checkbox-group" data-name="airlight">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="airlightComment" placeholder="Comments"></td>
+        </tr>
+        <tr>
+          <td>7. Security & Safety Measures</td>
+          <td>
+            <div class="checkbox-group" data-name="security">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="securityComment" placeholder="Comments"></td>
+        </tr>
+        <tr>
+          <td>8. Overall Experience</td>
+          <td>
+            <div class="checkbox-group" data-name="overall">
+              <label><input type="checkbox" value="1">1</label>
+              <label><input type="checkbox" value="2">2</label>
+              <label><input type="checkbox" value="3">3</label>
+              <label><input type="checkbox" value="4">4</label>
+              <label><input type="checkbox" value="5">5</label>
+            </div>
+          </td>
+          <td><input class="comment-box" type="text" name="overallComment" placeholder="Comments"></td>
+        </tr>
+      </table>
+
+      <h3>C. Open Feedback</h3>
+      <label>1. What did you like the most about the facility or services?</label>
+      <textarea id="likeMost"></textarea>
+
+      <label>2. What areas need improvement?</label>
+      <textarea id="needImprovement"></textarea>
+
+      <label>3. Additional comments or suggestions:</label>
+      <textarea id="additionalComments"></textarea>
+
+      <button type="submit">Submit Feedback</button>
+    </form>
+
+    <p id="thankYouMsg">✅ Thank you for your feedback!</p>
+    <button id="backToCalendar">⬅ Back to Calendar</button>
+  </div>
+
+  <script>
+    // Only one checkbox per row
+    document.querySelectorAll(".checkbox-group").forEach(group => {
+      const checkboxes = group.querySelectorAll("input[type='checkbox']");
+      checkboxes.forEach(box => {
+        box.addEventListener("change", () => {
+          if (box.checked) {
+            checkboxes.forEach(other => { if (other !== box) other.checked = false; });
+          }
+        });
+      });
+    });
+
+    const form = document.getElementById("feedbackForm");
+    const thankYouMsg = document.getElementById("thankYouMsg");
+    const backBtn = document.getElementById("backToCalendar");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Collect all form data
+      const data = {
+        department: document.getElementById("department").value,
+        eventTitle: document.getElementById("eventTitle").value,
+        eventDate: document.getElementById("eventDate").value,
+        contactPerson: document.getElementById("contactPerson").value,
+        ratings: {},
+        comments: {
+          likeMost: document.getElementById("likeMost").value,
+          needImprovement: document.getElementById("needImprovement").value,
+          additionalComments: document.getElementById("additionalComments").value
+        }
+      };
+
+      // Gather checkbox ratings
+      document.querySelectorAll(".checkbox-group").forEach(group => {
+        const checked = group.querySelector("input:checked");
+        if (checked) data.ratings[group.dataset.name] = checked.value;
+      });
+
+      // Gather individual comment boxes
+      document.querySelectorAll(".comment-box").forEach(box => {
+        if (box.name) data.ratings[box.name] = box.value;
+      });
+
+      try {
+        // Save to Google Sheet via Google Apps Script endpoint
+        await fetch("YOUR_GOOGLE_APPS_SCRIPT_URL_HERE", {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+        thankYouMsg.style.display = "block";
+        backBtn.style.display = "inline-block";
+
+        // Optional: auto redirect after 2s
+        setTimeout(() => { window.location.href = "calendar.html"; }, 2000);
+
+      } catch (err) {
+        alert("Error submitting feedback. Please try again.");
+        console.error(err);
+      }
+    });
+
+    // Back to Calendar button click
+    backBtn.addEventListener("click", () => {
+      window.location.href = "calendar.html";
+    });
+  </script>
+</body>
+</html>
